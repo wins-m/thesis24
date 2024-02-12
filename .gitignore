@@ -1,0 +1,12 @@
+# Porject
+venv/
+data/
+
+# Python
+**/*.pyc
+**/__pycache__/
+
+# MacOS
+.vscode/
+.DS_Store
+
