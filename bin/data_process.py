@@ -7,11 +7,11 @@ Steps:
 
 1. Load investor position for each period: (period, fundcode, stockcode, amount)
 2. Skip special period
-        # Drop funds not focus on ashare
-3. Drop non-universe stocks
-4. Drop small stocks
-5. Drop minor stocks
-6. Drop minor investors
+3. Drop small stocks
+4. Drop non-universe stocks (ST)
+5. Drop funds not focus on ashare (amount in A share less than 20 percents)
+6. Drop minor stocks (holded by less than K=10 funds)
+7. Drop minor investors (holded less than K=10 major stocks)
 
 """
 import os
@@ -60,10 +60,10 @@ def data_universe() -> pd.Series:
     kw = 'tradableBar5'
     src = Path(f'./data/{kw}.h5')
     df = pd.read_hdf(src, key=kw)
-    df = df.reset_index()
-    df = df.rename(columns={'date': 'tradingdate', 'instrument': 'stockcode', 'valid': 'valid'})
-    df['tradingdate'] = pd.to_datetime(df['tradingdate'])
-    df = df.set_index(['tradingdate', 'stockcode']).sort_index()
+    df = df['valid'].unstack()
+    df.index = pd.to_datetime(df.index)
+    df.index.neam = 'tradingdate'
+    df.columns.name = 'stockcode'
     return df
 
 
@@ -77,9 +77,12 @@ def data_mv():
     return mv
 
 
-def only_universe(df, univ=None, per=None) -> pd.DataFrame:
+def only_universe(df, univ=None) -> pd.DataFrame:
     """TODO Drop non-universe stocks"""
-    return df
+    dt_eop = pd.to_datetime(df.period.iloc[0], format='%Y%m%d')
+    valid_eop = univ.loc[univ.loc[:dt_eop].index[-1]]
+    stk_valid = valid_eop[valid_eop == 1.0].index.to_list()
+    return df[df.stockcode.isin(stk_valid)]
 
 
 def no_small_stock(df, mv, bar=0.2) -> pd.DataFrame:
@@ -162,24 +165,24 @@ def process_data(tgt='./cache/tokens.pkl', K=10):
         print("-------\n", per)
         df1 = df[df.period == per]
 
-        # Drop funds not focus on ashare
-        df1 = sift_main_funds(df1, centre='fundcode', val='shrpct', bar=20)
-
-        # 3. Drop non-universe stocks
-        df1 = only_universe(df1, univ=univ0)
-
-        # 4. Drop small stocks
+        # 3. Drop small stocks
         df1 = no_small_stock(df1, mv=mv2d)
   
-        # 5. Drop minor stocks
+        # 4. Drop non-universe stocks
+        df1 = only_universe(df1, univ=univ0)
+
+        # 5. Drop funds not focus on ashare
+        df1 = sift_main_funds(df1, centre='fundcode', val='shrpct', bar=20)
+
+        # 6. Drop minor stocks
         df1 = sift_min_obs(df1, col='stockcode', k=K)
         print("# vocabulary:\t%d" % df1.stockcode.unique().__len__())
         
-        # 6. Drop minor investors
+        # 7. Drop minor investors
         df1 = sift_min_obs(df1, col='fundcode', k=K)
         print("# tokens:\t%d" % df1.fundcode.unique().__len__())
 
-        # 7. Build tokens
+        # 8. Build tokens
         tokens.append(tokens_from(df1))
 
     tokens = pd.concat(tokens).sort_index()
