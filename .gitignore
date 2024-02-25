@@ -1,6 +1,8 @@
 # Porject
-venv/
+.venv/
 data/
+cache/
+results/
 
 # Python
 **/*.pyc
