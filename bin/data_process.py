@@ -134,7 +134,6 @@ def dump_tokens(sr, file):
                 f.write(f'{sr.loc[ind]}\n')
     else:
         raise Exception('Invalid token cache dir', file)
-    print('Tokens saved in:\n\t', file)
 
 
 def process_data(tgt='./cache/tokens.pkl', K=10):
@@ -162,7 +161,7 @@ def process_data(tgt='./cache/tokens.pkl', K=10):
     # For each period, bulid tokens
     tokens = []
     for per in df.period.unique():
-        print("-------\n", per)
+        print(f"-------\n{per}")
         df1 = df[df.period == per]
 
         # 3. Drop small stocks
@@ -190,6 +189,8 @@ def process_data(tgt='./cache/tokens.pkl', K=10):
     # Save in local cache path
     dump_tokens(tokens, file=tgt)
 
+    return tgt
+
 
 if __name__ == '__main__':
-    process_data()
+    print('Tokens saved in:\t%s' % process_data())

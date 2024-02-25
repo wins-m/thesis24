@@ -12,6 +12,8 @@ Steps:
 5. evaluation: return, volatility
 
 """
+from data_process import process_data
+
 
 if __name__ == '__main__':
-    pass
+    dtoken = process_data()
