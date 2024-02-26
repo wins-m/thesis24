@@ -9,12 +9,16 @@ I. sentence preparation: (period, fundcode)
 II. model embeddings: (period, stockcode) CRUCIAL!
     `stock_to_vec`
 III. similarity based on embeddings; other baselines
+IV. evaluation: return, volatility
 IV. data description for 1~3
-V. evaluation: return, volatility
 
 """
 from data_process import process_data
+from stock_to_vec import stock_to_vec
 
 
 if __name__ == '__main__':
-    dsentences = process_data()
+    d_sentences = process_data(tgt='cache/sentences.pkl', K=20)
+    d_stock_vector = stock_to_vec(src=d_sentences, stime=20130101, etime=20221231,
+                                  size=30, window=5, min_count=10, workers=4, skipgram=True,
+                                  force_update=True)
