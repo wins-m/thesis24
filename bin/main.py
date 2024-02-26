@@ -4,16 +4,17 @@ Run the whole project and report tables & graphs.
 Steps:
 ------
 
-1. token preparation: (period, fundcode)
-    module `data_process`
-2. model embeddings: (period, stockcode) CRUTIAL!
-3. similarity based on embeddings; other baselines
-4. data description for 1~3
-5. evaluation: return, volatility
+I. sentence preparation: (period, fundcode)
+    `data_process`
+II. model embeddings: (period, stockcode) CRUCIAL!
+    `stock_to_vec`
+III. similarity based on embeddings; other baselines
+IV. data description for 1~3
+V. evaluation: return, volatility
 
 """
 from data_process import process_data
 
 
 if __name__ == '__main__':
-    dtoken = process_data()
+    dsentences = process_data()

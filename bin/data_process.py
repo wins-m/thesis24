@@ -1,6 +1,7 @@
 """
+I. sentence preparation: (period, fundcode)
 
-Prepare tokens.
+- sentences: rank, $\rho_{i a}$, of asset $a$ in investor $i$'s portfolio
 
 Steps:
 ------
@@ -12,6 +13,10 @@ Steps:
 5. Drop funds not focus on ashare (amount in A share less than 20 percents)
 6. Drop minor stocks (holded by less than K=10 funds)
 7. Drop minor investors (holded less than K=10 major stocks)
+8. Build sentences
+    - holdings
+    - active weights
+    - rebalancing
 
 """
 import os
@@ -112,9 +117,9 @@ def sift_min_obs(df: pd.DataFrame, col: str, k=10) -> pd.DataFrame:
     return df[mask]
 
 
-def tokens_from(df, per='period', centre='fundcode', val='amount', name='stockcode', asc=False):
-    """Build tokens of each [`per`, `centre`] with a list of `name` ordered by ranked value `val`"""
-    kw = 'tokens'
+def sentences_from(df, per='period', centre='fundcode', val='amount', name='stockcode', asc=False):
+    """Build sentences of each [`per`, `centre`] with a list of `name` ordered by ranked value `val`"""
+    kw = 'sentences'
     tmp = df.groupby(centre).apply(lambda s: s.sort_values(val, ascending=asc)[name].to_list())
     tmp = tmp.rename(kw)
     tmp = tmp.reset_index()
@@ -122,8 +127,8 @@ def tokens_from(df, per='period', centre='fundcode', val='amount', name='stockco
     return tmp.set_index([per, centre])[kw]
 
 
-def dump_tokens(sr, file):
-    """Save tokens in local file"""
+def dump_sentences(sr: pd.Series, file):
+    """Save sentences in local file"""
     file = Path(file)
     if file.suffix == '.pkl':
         sr.to_pickle(file)
@@ -133,11 +138,11 @@ def dump_tokens(sr, file):
                 f.write(f'{ind}\n')
                 f.write(f'{sr.loc[ind]}\n')
     else:
-        raise Exception('Invalid token cache dir', file)
+        raise Exception('Invalid sentence cache dir', file)
 
 
-def process_data(tgt='./cache/tokens.pkl', K=10):
-    """Prepare tokens."""
+def process_data(tgt='cache/sentences.pkl', K=20):
+    """Prepare sentences."""
 
     # 1. Load investor position for each period: (period, fundcode, stockcode, amount)
     df = data_fund()
@@ -158,8 +163,8 @@ def process_data(tgt='./cache/tokens.pkl', K=10):
     # Market value
     mv2d = data_mv()
 
-    # For each period, bulid tokens
-    tokens = []
+    # For each period, bulid sentences
+    sentences = []
     for per in df.period.unique():
         print(f"-------\n{per}")
         df1 = df[df.period == per]
@@ -175,22 +180,22 @@ def process_data(tgt='./cache/tokens.pkl', K=10):
 
         # 6. Drop minor stocks
         df1 = sift_min_obs(df1, col='stockcode', k=K)
-        print("# vocabulary:\t%d" % df1.stockcode.unique().__len__())
+        print("# tokens:\t%d" % df1.stockcode.unique().__len__())
         
         # 7. Drop minor investors
         df1 = sift_min_obs(df1, col='fundcode', k=K)
-        print("# tokens:\t%d" % df1.fundcode.unique().__len__())
+        print("# sentences:\t%d" % df1.fundcode.unique().__len__())
 
-        # 8. Build tokens
-        tokens.append(tokens_from(df1))
+        # 8. Build sentences
+        sentences.append(sentences_from(df1))
 
-    tokens = pd.concat(tokens).sort_index()
+    sentences = pd.concat(sentences).sort_index()
     
     # Save in local cache path
-    dump_tokens(tokens, file=tgt)
+    dump_sentences(sentences, file=tgt)
 
     return tgt
 
 
 if __name__ == '__main__':
-    print('Tokens saved in:\t%s' % process_data())
+    print('sentences saved in:\t%s' % process_data())
