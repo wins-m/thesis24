@@ -23,15 +23,15 @@ def refined_sent(df) -> pd.DataFrame:
     return df
 
 
-def stock_to_vec(src='cache/sentences.pkl', 
+def stock_to_vec(src: str, 
                  stime=20130101, etime=20221231,
                  size=30, window=5, min_count=10,
-                 workers=4, skipgram=True,
+                 workers=2, skipgram=True,
                  force_update=False):
     """Get stock vector using skip-gram."""
 
     # Output path
-    tgt = f'cache/wvec.{stime}.{etime}.{size}.{window}.{min_count}' 
+    tgt = f"{src.rsplit('.', maxsplit=1)[0]}.vector.{stime}.{etime}.{size}.{window}.{min_count}.pkl"
     if os.path.exists(tgt) and (not force_update):
         return tgt
 
@@ -56,4 +56,4 @@ def stock_to_vec(src='cache/sentences.pkl',
 
 
 if __name__ == '__main__':
-    print(f'Stock vector saved in `{stock_to_vec()}`')
+    print(f"Stock vector saved in `{stock_to_vec(src='cache/sentences.10.pkl')}`")
