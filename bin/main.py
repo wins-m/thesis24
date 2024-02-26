@@ -18,7 +18,7 @@ from stock_to_vec import stock_to_vec
 
 
 if __name__ == '__main__':
-    d_sentences = process_data(tgt='cache/sentences.pkl', K=20)
+    d_sentences = process_data(K=10, force_update=True)
     d_stock_vector = stock_to_vec(src=d_sentences, stime=20130101, etime=20221231,
                                   size=30, window=5, min_count=10, workers=4, skipgram=True,
                                   force_update=True)

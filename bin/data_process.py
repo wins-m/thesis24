@@ -141,8 +141,13 @@ def dump_sentences(sr: pd.Series, file):
         raise Exception('Invalid sentence cache dir', file)
 
 
-def process_data(tgt='cache/sentences.pkl', K=20):
+def process_data(K=10, force_update=False):
     """Prepare sentences."""
+
+    # Output path
+    tgt = Path(f'cache/sentences.{K}.pkl')
+    if tgt.exists() and not force_update:
+        return tgt
 
     # 1. Load investor position for each period: (period, fundcode, stockcode, amount)
     df = data_fund()
