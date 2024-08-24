@@ -7,6 +7,64 @@ import pandas as pd
 from functools import reduce
 
 
+def data_adjopen() -> pd.DataFrame:
+    """
+    stockcode    000001.SZ  000002.SZ 000003.SZ  000004.SZ  000005.SZ
+    tradingdate                                                      
+    20081231        342.90     716.86       NaN      14.22      23.73
+    20090105        343.62     725.68       NaN      14.63      23.08
+    20090106        351.87     736.71       NaN      14.96      23.82
+    20090107        366.24     764.28       NaN      15.32      24.47
+    20090108        350.08     744.43       NaN      16.21      24.00
+    """
+    adjopen = pd.read_hdf('data/复权开盘价.h5', key='data')
+    adjopen.index.name = 'tradingdate'
+    adjopen.columns.name = 'stockcode'
+    return adjopen
+
+
+def get_winsorize_sr(sr: pd.Series, nsigma=3) -> pd.Series:
+    """对series缩尾"""
+    sr1 = sr.copy()
+    md = sr1.median()
+    mad = 1.483 * sr1.sub(md).abs().median()
+    up = sr1.apply(lambda k: k > md + mad * (0 + nsigma))
+    down = sr1.apply(lambda k: k < md - mad * (0 + nsigma))
+    sr1[up] = sr1[up].rank(pct=True).multiply(mad * 0.5).add(md + mad * (0 + nsigma))
+    sr1[down] = sr1[down].rank(pct=True).multiply(mad * 0.5).add(md - mad * (0 + nsigma))
+    return sr1
+
+
+def get_last_period(stime: int, freq="HY") -> int:
+    """freq 频率 返回上一个报告期"""
+    y, d = stime // 10000, stime % 10000
+    if freq == 'HY':
+        if d == 630:
+            y -= 1
+            d = 1231
+        else:
+            d = 630
+        return y * 10000 + d
+
+
+def get_next_period(stime: int, freq="HY") -> int:
+    """freq 频率 返回下一个报告期"""
+    y, d = stime // 10000, stime % 10000
+    if freq == 'HY':
+        if d == 630:
+            d = 1231
+        else:
+            y += 1
+            d = 630
+        return y * 10000 + d
+
+
+def get_industry(stime=20130101, etime=20231231, lvl=1) -> pd.Series:
+    src = 'data/industries_class_citics.1.h5'
+    df = pd.read_hdf(src, key='data').query(f'{stime} <= date <= {etime}')
+    return df[f"CODELV{lvl}"]
+
+
 def get_universe(bd='2009-01-01', ed='2023-06-30', src=None) -> pd.DataFrame:
     if src is None:
         src = "data/中证1000.h5"
@@ -65,6 +123,7 @@ def compute_portfolio_cum_rtn(price_df, weights):
 
 
 def debug():
+    indus = get_industry()
     univ0 = get_universe()
     price_df = get_price_df(univ=univ0)
     rebal_dates = get_rebal_dates(fv2d=price_df, start_year='2009')

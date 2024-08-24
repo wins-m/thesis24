@@ -107,6 +107,28 @@ def data_universe(kw='tradableBar5') -> pd.DataFrame:
     return df
 
 
+def data_asset_mv(kw="总市值") -> pd.DataFrame:
+    """
+    Get asset market share
+
+    Return
+    ------
+    stockcode       000001.SZ     000002.SZ 000003.SZ   000004.SZ    000005.SZ
+    tradingdate                                                               
+    2008-12-31   2.634237e+06  6.071939e+06       NaN  25029.4383  180916.6354
+    2009-01-05   2.703852e+06  6.307285e+06       NaN  25943.4347  186752.6559
+    2009-01-06   2.868144e+06  6.495562e+06       NaN  26716.8162  192588.6764
+    2009-01-07   2.781821e+06  6.457907e+06       NaN  28052.6570  190400.1687
+    2009-01-08   2.673222e+06  6.495562e+06       NaN  29458.8052  185293.6507 
+
+    """
+    src = "data/ashareMarketData/日行情/%s.h5" % kw
+    mv = pd.read_hdf(src)
+    mv.index = pd.to_datetime(mv.index, format='%Y%m%d').rename('tradingdate')
+    mv.columns.name = 'stockcode'
+    return mv
+
+
 def data_mv(kw="流通市值") -> pd.DataFrame:
     """
     Get free market share

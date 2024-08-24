@@ -18,7 +18,6 @@ IV. data description for 1~3
 """
 from data_process import process_data
 from stock_to_vec import stock_to_vec
-from similarity import similarity, similarity_linear
 
 
 def evaluation():
@@ -37,23 +36,26 @@ def main():
     K = 10
 
     # I. sentence preparation: (period, fundcode)
-    d_sentence, d_holdamt = process_data(K=K, force_update=0)
+    d_sentence, d_holdamt = process_data(K=K, force_update=False)
     print(d_sentence, d_holdamt)
 
     # II. model embeddings: (period, stockcode)
-    d_stock_vector = stock_to_vec(src=d_sentence, stime=20130101, etime=20221231,
-                                  size=30, window=5, min_count=K,
-                                  workers=4, skipgram=True,
-                                  force_update=1)
-    print(d_stock_vector)
+    # window = 5
+    window = 10
+    for year in range(2014, 2024):
+        d_stock_vector, d_similarities = stock_to_vec(
+            src=d_sentence, stime=(year-1)*10000+101, etime=year*10000+630,
+            size=30, window=window, min_count=K,
+            workers=4, skipgram=True,
+            force_update=True)
+        print(d_stock_vector, d_similarities)
+        d_stock_vector, d_similarities = stock_to_vec(
+            src=d_sentence, stime=(year-1)*10000+701, etime=year*10000+1231,
+            size=30, window=window, min_count=K,
+            workers=4, skipgram=True,
+            force_update=True)
+        print(d_stock_vector, d_similarities)
     
-    # III. similarity based on embeddings; other baselines
-    d_similarity = similarity(src=d_stock_vector)
-
-    # IV. evaluation: return, volatility
-
-    # IV. data description for 1~3
-
 
 if __name__ == '__main__':
     main()
