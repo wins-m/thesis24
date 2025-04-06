@@ -38,6 +38,8 @@ This paper primarily uses the Word2Vec model to extract stock embeddings from fu
 
 The research in this paper indicates that embedding methods can obtain interpretable stock characteristics from fund holdings, facilitating the identification of similar stocks and industries. There exists a monotonic relationship between correlation indicators of stock embedding representations and stock industry classification, as well as stock market capitalization. The correlation indicators also exhibit a monotonic relationship with future stock returns; however, this phenomenon is less apparent when using manually constructed correlation indicators. The stock correlation momentum factor obtained from embedding representations achieved a daily rank IC of 2.41% during the period from July 2014 to June 2023, with an ICIR of 0.305 after industry and market neutralization; the results withstand Fama-MacBeth testing after controlling for Barra style factors.
 
+**KEY WORDS: Fund holdings, Stock embedding, Stock correlation, Anomaly**
+
 ---
 
 ## 目录
