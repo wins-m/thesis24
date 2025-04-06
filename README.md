@@ -1,5 +1,10 @@
-![image](https://github.com/user-attachments/assets/acb58be8-43ab-4fff-88c0-e48f245b62e4)- [report](./doc/slides.pdf)
+- [report](./doc/slides.pdf)
 - [paper](./doc/paper.md)
+
+
+![image](https://github.com/user-attachments/assets/acb58be8-43ab-4fff-88c0-e48f245b62e4)
+
+![image](https://github.com/user-attachments/assets/0247c2bc-c097-40f3-86b9-34a56b2e9ff4)
 
 ---
 marp: true
@@ -7,30 +12,12 @@ theme: default
 size: 16:9
 
 ---
-
 # 基金持股中的股票嵌入与股票关联
 
 ***STOCK EMBEDDINGS AND STOCK CORRELATION***
 ***FROM MUTUAL FUND HOLDINGS***
 
-> 毛思文  2024.5
-
----
-## 摘要
-
-共同基金每季度公开披露的基金持股中包含重要的股票特征信息。这部分信息由两方面组成，包括基金经理利用信息优势所掌握的公司状况，以及基金经理进行组合配置时的持股意愿。但是，这些反映股票最新情况的信息是隐含的，在解读和应用时存在困难。为了更有效地提取隐含的股票特征，本文引入嵌入方法（Embedding Methods），从基金持股的“上下文”顺序中学习股票嵌入。其中，股票嵌入表示的空间距离是嵌入方法的关键，同股票显性特征、股票收益表现之间可能存在联系。
-
-本文主要使用Word2Vec模型提取基金持股中的股票嵌入。围绕嵌入表示后的股票关联，本文首先进行相关性分析，研究关联度指标和股票行业分类、风格特征、收益率相关性等显性特征的关系，从而考察股票嵌入表示的可解释性。基于关联股票之间收益率相关这一现象，本文构造关联动量因子，并通过Fama-MacBeth回归对因子背后的定价异象进行实证检验。在上述研究过程中，本文也通过人工构造的方式从基金持股中提取股票关联，用于同嵌入方法对比。
-
-本文的研究表明，嵌入方法能够从基金持股中获得具有可解释性的股票特征，有助于发现相似的股票和相似的行业。股票嵌入表示的关联度指标和股票行业分类、股票流通市值之间存在单调关系；关联度指标和股票未来收益率的相关性具有单调关系；上述现象在使用人工关联度指标时不明显。嵌入表示获得的股票关联动量因子在2014.7至2023.6期间日度rank IC达到2.41%，行业和市值中性化后的ICIR为0.305；在控制Barra风格因子后能够通过Fama-MacBeth检验。
-
----
-
-## Abstract
-
-Mutual funds' quarterly disclosures of fund holdings contain important stock characteristic information. This information consists of two aspects: the latest company performance that fund managers grasp using their informational advantage, and the stock holding preferences of fund managers when making portfolio allocations. However, these pieces of information reflecting the latest stock conditions are implicit, leading to difficulties in interpretation and application. To more effectively extract implicit stock characteristics, this paper introduces embedding methods, which learn stock embeddings from the contextual order in fund holdings. The spatial distance between stocks is crucial in embedding methods and may be related to explicit stock features and stock performance.
-This paper primarily uses the Word2Vec model to extract stock embeddings from fund holdings. Focusing on the correlation of stocks after representation embedding, this paper first conducts correlation analysis to examine the relationship between stock correlation indicators and industry classification, style characteristics, and return co-movements, thereby investigating the interpretability of embedding representations. Based on the phenomenon of return correlations among associated stocks, this paper constructs a correlation momentum factor and empirically tests the pricing anomalies behind the factor through Fama-MacBeth regression. In the aforementioned research process, this paper also extracts stock correlations from fund holdings manually for comparison with embedding methods.
-The research in this paper indicates that embedding methods can obtain interpretable stock characteristics from fund holdings, facilitating the identification of similar stocks and industries. There exists a monotonic relationship between correlation indicators of stock embedding representations and stock industry classification, as well as stock market capitalization. The correlation indicators also exhibit a monotonic relationship with future stock returns; however, this phenomenon is less apparent when using manually constructed correlation indicators. The stock correlation momentum factor obtained from embedding representations achieved a daily rank IC of 2.41% during the period from July 2014 to June 2023, with an ICIR of 0.305 after industry and market neutralization; the results withstand Fama-MacBeth testing after controlling for Barra style factors.
+> wins-m  2024.5
 
 ---
 
