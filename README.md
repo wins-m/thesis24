@@ -1,1 +1,2 @@
-- [reports](./doc/slides.pdf)
+- [report](./doc/slides.pdf)
+- [paper](./doc/paper.md)
