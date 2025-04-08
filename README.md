@@ -1,5 +1,5 @@
 - [report](./doc/slides.pdf)
-- [paper](./doc/paper.md)
+- [paper](./doc/paper.pdf)
 
 ---
 marp: true
